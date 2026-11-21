@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# Servir normalement les fichiers qui existent (assets, favicons…)
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# Rediriger toutes les autres requêtes vers /
+RewriteCond %{REQUEST_URI} !^/$
+RewriteRule ^ / [R=302,L]
