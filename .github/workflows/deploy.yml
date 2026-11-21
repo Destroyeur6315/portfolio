@@ -25,4 +25,5 @@ jobs:
             cd "${{ secrets.DEPLOY_PATH }}"
             git pull origin main --ff-only
             rm -rf ../public_html
-            cp -r public_html/* ../public_html/
+            mkdir ../public_html
+            cp -r public_html/* ../public_html
