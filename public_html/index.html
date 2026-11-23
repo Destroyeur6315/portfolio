@@ -5,7 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Romain Fillot, développeur Python & full stack à Clermont-Ferrand. Applications métier, automatisation, API et données.">
   <meta name="theme-color" content="#f7f6f2" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#141413" media="(prefers-color-scheme: dark)">
+  <script>
+    // Applique le thème avant l'affichage pour éviter un flash de la mauvaise couleur
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('theme'); } catch (e) {}
+      if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
   <title>Romain Fillot · Développeur Python & Full Stack</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="icon" type="image/png" sizes="192x192" href="favicon.png">
@@ -13,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=2">
+  <link rel="stylesheet" href="assets/style.css?v=4">
 </head>
 <body>
   <main class="page">
@@ -29,6 +38,10 @@
           <a class="social social--in" href="https://www.linkedin.com/in/TON-PROFIL" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
           </a>
+          <button class="social social--theme" type="button" id="theme-toggle" aria-label="Passer en thème sombre" title="Thème sombre">
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></g></svg>
+          </button>
         </div>
       </div>
       <h1>Romain Fillot</h1>
@@ -242,6 +255,30 @@
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Thème clair / sombre
+    const root = document.documentElement;
+    const toggle = document.getElementById('theme-toggle');
+    const themeColors = document.querySelectorAll('meta[name="theme-color"]');
+    const applyTheme = (t) => {
+      root.dataset.theme = t;
+      const next = t === 'dark' ? 'clair' : 'sombre';
+      toggle.setAttribute('aria-label', 'Passer en thème ' + next);
+      toggle.title = 'Thème ' + next;
+      themeColors.forEach((m) => m.setAttribute('content', t === 'dark' ? '#141413' : '#f7f6f2'));
+    };
+    applyTheme(root.dataset.theme === 'dark' ? 'dark' : 'light');
+    toggle.addEventListener('click', () => {
+      const t = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      applyTheme(t);
+      try { localStorage.setItem('theme', t); } catch (e) {}
+    });
+    // Suit le système tant que le visiteur n'a rien choisi
+    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      let saved = null;
+      try { saved = localStorage.getItem('theme'); } catch (err) {}
+      if (!saved) applyTheme(e.matches ? 'dark' : 'light');
+    });
     const copy = document.getElementById('copy');
     copy.addEventListener('click', async () => {
       try {
